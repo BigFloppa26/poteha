@@ -1,0 +1,85 @@
+logging:
+  level:
+    sql: debug
+
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  data:
+    redis:
+      repositories.enabled: false
+      url: ${REDIS_URL}
+
+  minio:
+    access-key: ${MINIO_ACCESS_KEY}
+    secret-key: ${MINIO_SECRET_KEY}
+    region: ${MINIO_REGION}
+    expires: ${MINIO_LINK_EXPIRES}
+    base-uri: ${MINIO_URI}
+    uri: ${MINIO_URI}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          yandex:
+            client-id: ${OAUTH2_YANDEX_CLIENT_ID}
+            client-secret: ${OAUTH2_YANDEX_CLIENT_SECRET}
+            redirect-uri: ${server.url}/login/oauth2/code/yandex
+            authorizationGrantType: authorization_code
+        provider:
+          yandex:
+            authorization-uri: https://oauth.yandex.ru/authorize
+            user-info-uri: https://login.yandex.ru/info
+            token-uri: https://oauth.yandex.ru/token
+            user-name-attribute: default_email
+
+    jwt:
+      expires: 24h
+      private: rsa/private.pem
+      public: rsa/public.pem
+
+  confirm:
+    expires: 10m
+    attempts: 3
+
+  main:
+    banner-mode: off
+  mvc:
+    problemdetails.enabled: true
+  web:
+    locale: ru
+  mail:
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    ssl.enabled: true
+
+server:
+  port: 8080
+  url: ${BASE_URL:http://localhost:${server.port}}
+
+springdoc:
+  swagger-ui:
+    path: /docs/swagger-ui
+  api-docs:
+    path: /docs/openapi.json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
